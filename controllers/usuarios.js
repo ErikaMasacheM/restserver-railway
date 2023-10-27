@@ -1,4 +1,5 @@
 const { response } = require('express');
+const Usuario = require('../models/usuario')
 
 /**
  * Postman
@@ -21,11 +22,15 @@ const usuariosGet = (req, res = response) => {
  * url: http://localhost:3000/api/usuarios
  * datos: { "nombre": "Erika"}
  */
-const usuariosPost = (req, res = response) => {
-    const { nombre = '', edad = '' } = req.body;
+const usuariosPost = async (req, res = response) => {
+    const {nombre, correo, password, rol} = req.body;
+    const usuario = new Usuario(nombre, correo, password, rol);
+
+    await usuario.save();
+
     res.json({
         msg: 'post api - controller',
-        nombre, edad
+        usuario
     })
 }
 
