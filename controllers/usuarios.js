@@ -8,14 +8,19 @@ const bcrypt = require('bcryptjs');
  * metodo: Get
  * url: http://localhost:3000/api/usuarios?q=hola&page=1&limit=10
  */
-const usuariosGet = (req, res = response) => {
+const usuariosGet = async (req, res = response) => {
 
-    const { q, nombre = 'No name', apiKey } = req.query;
+    const { limit = 0, desde = 0 } = req.query;
+    const filtros = { estado: true };
 
-    res.json({
-        msg: 'get api - controller',
-        q, nombre, apiKey
-    })
+    const [total, usuarios] = await Promise.all([
+        Usuario.countDocuments(filtros),
+        Usuario.find(filtros)
+            .skip(+desde)
+            .limit(+limit)
+    ]);
+console.log({ total, usuarios });
+    res.json({ total, usuarios });
 }
 
 /**
@@ -34,7 +39,7 @@ const usuariosPost = async (req, res = response) => {
 
     await usuario.save();
 
-    res.json({usuario});
+    res.json({ usuario });
 }
 
 /**
@@ -42,13 +47,23 @@ const usuariosPost = async (req, res = response) => {
  * metodo: Put
  * url: http://localhost:3000/api/usuarios/1
  */
-const usuariosPut = (req, res = response) => {
+const usuariosPut = async (req, res = response) => {
 
     const { id } = req.params;
 
+    const { password, google, ...resto } = req.body;
+
+    if (password) {
+        const salt = bcrypt.genSaltSync();
+        resto.password = bcrypt.hashSync(password, salt);
+    }
+
+    const usuario = await Usuario.findOneAndReplace({ _id: id }, resto, {
+        new: true
+    })
+
     res.json({
-        msg: 'put api - controller',
-        id
+        usuario
     })
 }
 
@@ -58,9 +73,14 @@ const usuariosPatch = (req, res = response) => {
     })
 }
 
-const usuariosDelete = (req, res = response) => {
+const usuariosDelete = async (req, res = response) => {
+    
+    const {id} = req.params;
+
+    const usuario = await Usuario.findByIdAndUpdate(id, {estado: true});
+
     res.json({
-        msg: 'delete api - controller'
+        msg: 'usuario borrado '
     })
 }
 module.exports = {

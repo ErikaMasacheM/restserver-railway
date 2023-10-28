@@ -25,10 +25,14 @@ const UsuarioSchema = Schema({
     google: {
         type: Boolean,
         default: false
+    },
+    estado: {
+        type: Boolean,
+        default: true
     }
 });
 
-UsuarioSchema.methods.toJson = function () {
+UsuarioSchema.methods.toJSON = function () {
     const {__v, password, ...usuario} = this.toObject();
     return usuario;
 }
