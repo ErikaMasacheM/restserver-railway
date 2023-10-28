@@ -1,6 +1,8 @@
 const { response } = require('express');
 const Usuario = require('../models/usuario')
 
+const bcrypt = require('bcryptjs');
+
 /**
  * Postman
  * metodo: Get
@@ -23,15 +25,16 @@ const usuariosGet = (req, res = response) => {
  * datos: { "nombre": "Erika"}
  */
 const usuariosPost = async (req, res = response) => {
-    const {nombre, correo, password, rol} = req.body;
-    const usuario = new Usuario(nombre, correo, password, rol);
+    const { nombre, correo, password, rol } = req.body;
+    console.log({ nombre, correo, password, rol });
+    const usuario = new Usuario({ nombre, correo, password, rol });
+
+    const salt = bcrypt.genSaltSync();
+    usuario.password = bcrypt.hashSync(password, salt);
 
     await usuario.save();
 
-    res.json({
-        msg: 'post api - controller',
-        usuario
-    })
+    res.json({usuario});
 }
 
 /**
@@ -61,9 +64,9 @@ const usuariosDelete = (req, res = response) => {
     })
 }
 module.exports = {
-    usuariosGet,
-    usuariosPut,
-    usuariosPost,
-    usuariosPatch,
-    usuariosDelete,
+    usuariosGet: usuariosGet,
+    usuariosPut: usuariosPut,
+    usuariosPost: usuariosPost,
+    usuariosPatch: usuariosPatch,
+    usuariosDelete: usuariosDelete,
 }
