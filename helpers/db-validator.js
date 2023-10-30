@@ -26,5 +26,5 @@ const existeUsuarioPorId = async (id) => {
 module.exports = {
     esRolValido: esRolValido,
     correoExiste: correoExiste,
-    existeUsuarioPorId
+    existeUsuarioPorId: existeUsuarioPorId
 }

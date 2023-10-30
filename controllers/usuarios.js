@@ -19,7 +19,7 @@ const usuariosGet = async (req, res = response) => {
             .skip(+desde)
             .limit(+limit)
     ]);
-console.log({ total, usuarios });
+    // console.log({ total, usuarios });
     res.json({ total, usuarios });
 }
 
@@ -80,7 +80,7 @@ const usuariosDelete = async (req, res = response) => {
     const usuario = await Usuario.findByIdAndUpdate(id, {estado: true});
 
     res.json({
-        msg: 'usuario borrado '
+        msg: 'usuario borrado ', usuario, usuarioAutenticado: req.usuarioAutenticado
     })
 }
 module.exports = {
