@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const { request, response } = require('express');
-const Usuario = require('../models/usuario')
+const { Usuario } = require('../models')
 const validarJWT = async (req = request, res = response, next) => {
 
     const token = req.header('Authorization');
@@ -13,17 +13,17 @@ const validarJWT = async (req = request, res = response, next) => {
         const { uid } = jwt.verify(token, process.env.PUBLIC_KEY);
         const usuarioAutenticado = await Usuario.findById(uid);
 
-        if(!usuarioAutenticado){
+        if (!usuarioAutenticado) {
             return res.status(401).json({ msg: 'No existe Usuario' });
         }
 
-        if(!usuarioAutenticado.estado){
+        if (!usuarioAutenticado.estado) {
             return res.status(401).json({ msg: 'Usuario bloqueado' });
         }
 
         req.usuarioAutenticado = usuarioAutenticado;
 
-        console.log(usuarioAutenticado);
+        // console.log(usuarioAutenticado);
 
         // next();
     } catch (error) {
@@ -31,7 +31,7 @@ const validarJWT = async (req = request, res = response, next) => {
         res.status(401).send({ msg: 'Error interno del servidor' })
     }
 
-    console.log(token);
+    // console.log(token);
 
     next();
 }
