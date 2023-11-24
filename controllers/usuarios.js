@@ -32,6 +32,7 @@ const usuariosGet = async (req, res = response) => {
 const usuariosPost = async (req, res = response) => {
     const { nombre, correo, password, rol } = req.body;
     console.log({ nombre, correo, password, rol });
+
     const usuario = new Usuario({ nombre, correo, password, rol });
 
     const salt = bcrypt.genSaltSync();
