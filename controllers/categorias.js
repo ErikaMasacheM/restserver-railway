@@ -2,11 +2,21 @@ const { response } = require("express")
 const { Categoria } = require('../models');
 
 const categoriasGet = async (req, res = response) => {
-    const { limit = 0, desde = 0 } = req.query;
+    const { limit = 5, desde = 0 } = req.query;
     const filtros = { estado: true }
 
-    const categorias = await Categoria.find({});
-    res.json({ categorias })
+    const [total, categorias] = await Promise.all([
+        Categoria.countDocuments(filtros),
+        Categoria.find(filtros)
+            .populate('usuario', 'nombre')
+            .skip(Number(desde))
+            .limit(Number(limit))
+    ]);
+
+    return res.json({
+        total,
+        categorias
+    });
 
 
 };
