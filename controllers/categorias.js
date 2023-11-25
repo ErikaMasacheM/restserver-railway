@@ -21,8 +21,13 @@ const categoriasGet = async (req, res = response) => {
 
 };
 
-const categoriaGet = (req, res = response) => {
-    return res.json({ msg: `get ` });
+const categoriaGet = async (req, res = response) => {
+
+    const { id } = req.params;
+    const categoria = await Categoria.findById(id)
+        .populate('usuario', 'nombre');
+
+    return res.json(categoria);
 }
 
 const categoriasPost = async (req, res = response) => {
@@ -39,18 +44,31 @@ const categoriasPost = async (req, res = response) => {
     return res.json(categoriaNueva);
 }
 
-const categoriasPut = (req, res = response) => {
-    return res.json({ msg: `put ` });
+const categoriasPut = async (req, res = response) => {
+
+    const { id } = req.params;
+    const { estado, usuario, ...data } = req.body;
+
+    data.nombre = data.nombre.toUpperCase();
+    data.usuario = req.usuarioAutenticado._id;
+
+    const categoria = await Categoria.findOneAndUpdate({ _id: id }, data, { new: true });
+
+    return res.json(categoria);
 }
 
-const categoriasDelete = (req, res = response) => {
-    return res.json({ msg: `delete ` });
+const categoriasDelete = async (req, res = response) => {
+    
+    const { id } = req.params;
+    const categoria = await Categoria.findOneAndUpdate({ _id: id }, {estado: false}, { new: false } );
+
+    return res.json(categoria);
 }
 
 module.exports = {
-    categoriasGet,
-    categoriaGet,
-    categoriasPost,
-    categoriasPut,
-    categoriasDelete,
+    categoriasGet: categoriasGet,
+    categoriaGet: categoriaGet,
+    categoriasPost: categoriasPost,
+    categoriasPut: categoriasPut,
+    categoriasDelete: categoriasDelete,
 }

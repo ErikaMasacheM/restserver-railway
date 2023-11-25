@@ -23,6 +23,13 @@ const usuariosGet = async (req, res = response) => {
     res.json({ total, usuarios });
 }
 
+const usuarioGet = async (req, res = response) => {
+
+    const { id } = req.params;
+    const usuario = await Usuario.findById(id);
+    res.json(usuario);
+}
+
 /**
  * postman
  * metodo: post
@@ -86,6 +93,7 @@ const usuariosDelete = async (req, res = response) => {
 }
 module.exports = {
     usuariosGet: usuariosGet,
+    usuarioGet: usuarioGet,
     usuariosPut: usuariosPut,
     usuariosPost: usuariosPost,
     usuariosPatch: usuariosPatch,

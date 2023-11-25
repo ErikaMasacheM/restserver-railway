@@ -1,54 +1,54 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarCampos, validarJWT } = require('../middlewares');
-const { categoriaGet,
-    categoriasGet,
-    categoriasPost,
-    categoriasPut,
-    categoriasDelete } = require('../controllers/categorias');
+const { productosGet,
+    productoGet,
+    productoPost,
+    productoPut,
+    productoDelete } = require('../controllers/producto');
 
-const { categoriaExiste, existeCategoriaPorId } = require('../helpers/db-validator');
+const { productoExiste, existeproductoPorId } = require('../helpers/db-validator');
 
 const router = Router();
 
-// obtener las categorias
+// obtener las producto
 router.get('/', [
     validarJWT
-], categoriasGet);
+], productosGet);
 
-// obtener una categoria por id
+// obtener una producto por id
 router.get('/:id', [
     validarJWT,
     check('id', 'No es un id valido').isMongoId(),
-    check('id').custom(existeCategoriaPorId),
+    check('id').custom(existeproductoPorId),
     validarCampos
-], categoriaGet);
+], productoGet);
 
-// crear una categoria
+// crear una producto
 router.post('/', [
     validarJWT,
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
-    check('nombre').custom(categoriaExiste),
+    check('nombre').custom(productoExiste),
     validarCampos
-], categoriasPost);
+], productoPost);
 
-// actualizar una categoria
+// actualizar una producto
 router.put('/:id', [
     validarJWT,
     check('id', 'El id es obligatorio').not().isEmpty(),
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('id', 'No es un id valido').isMongoId(),
-    check('id').custom(existeCategoriaPorId),
+    check('id').custom(existeproductoPorId),
     validarCampos
-], categoriasPut);
+], productoPut);
 
-// eliminar una categoria
+// eliminar una producto
 router.delete('/:id', [
     validarJWT,
     check('id', 'El id es obligatorio').not().isEmpty(),
     check('id', 'No es un id valido').isMongoId(),
-    check('id').custom(existeCategoriaPorId),
+    check('id').custom(existeproductoPorId),
     validarCampos
-], categoriasDelete);
+], productoDelete);
 
 module.exports = router;
