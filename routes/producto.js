@@ -7,7 +7,7 @@ const { productosGet,
     productoPut,
     productoDelete } = require('../controllers/producto');
 
-const { productoExiste, existeproductoPorId } = require('../helpers/db-validator');
+const { productoExiste, existeProductoPorId } = require('../helpers/db-validator');
 
 const router = Router();
 
@@ -20,7 +20,7 @@ router.get('/', [
 router.get('/:id', [
     validarJWT,
     check('id', 'No es un id valido').isMongoId(),
-    check('id').custom(existeproductoPorId),
+    check('id').custom(existeProductoPorId),
     validarCampos
 ], productoGet);
 
@@ -28,6 +28,8 @@ router.get('/:id', [
 router.post('/', [
     validarJWT,
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+    check('estado', 'El estado es obligatorio').not().isEmpty(),
+    check('categoria', 'El categoria es obligatoria').not().isEmpty(),
     check('nombre').custom(productoExiste),
     validarCampos
 ], productoPost);
@@ -38,7 +40,7 @@ router.put('/:id', [
     check('id', 'El id es obligatorio').not().isEmpty(),
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('id', 'No es un id valido').isMongoId(),
-    check('id').custom(existeproductoPorId),
+    check('id').custom(existeProductoPorId),
     validarCampos
 ], productoPut);
 
@@ -47,7 +49,7 @@ router.delete('/:id', [
     validarJWT,
     check('id', 'El id es obligatorio').not().isEmpty(),
     check('id', 'No es un id valido').isMongoId(),
-    check('id').custom(existeproductoPorId),
+    check('id').custom(existeProductoPorId),
     validarCampos
 ], productoDelete);
 

@@ -9,6 +9,7 @@ const productosGet = async (req, res = response) => {
         Producto.countDocuments(filtros),
         Producto.find(filtros)
             .populate('usuario', 'nombre')
+            .populate('categoria', 'nombre')
             .skip(Number(desde))
             .limit(Number(limit))
     ]);
@@ -25,17 +26,19 @@ const productoGet = async (req, res = response) => {
 
     const { id } = req.params;
     const producto = await Producto.findById(id)
+        .populate('categoria', 'nombre')
         .populate('usuario', 'nombre');
 
     return res.json(producto);
 }
 
 const productoPost = async (req, res = response) => {
-    const nombre = req.body.nombre.toUpperCase();
+    const { nombre, categoria } = req.body;
 
     const data = {
         nombre,
-        usuario: req.usuarioAutenticado._id
+        usuario: req.usuarioAutenticado._id,
+        categoria
     }
 
     const productoNueva = new Producto(data);
@@ -49,7 +52,6 @@ const productoPut = async (req, res = response) => {
     const { id } = req.params;
     const { estado, usuario, ...data } = req.body;
 
-    data.nombre = data.nombre.toUpperCase();
     data.usuario = req.usuarioAutenticado._id;
 
     const producto = await Producto.findOneAndUpdate({ _id: id }, data, { new: true });
@@ -58,9 +60,9 @@ const productoPut = async (req, res = response) => {
 }
 
 const productoDelete = async (req, res = response) => {
-    
+
     const { id } = req.params;
-    const producto = await Producto.findOneAndUpdate({ _id: id }, {estado: false}, { new: false } );
+    const producto = await Producto.findOneAndUpdate({ _id: id }, { estado: false }, { new: false });
 
     return res.json(producto);
 }
