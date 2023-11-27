@@ -3,7 +3,11 @@ const { response } = require("express");
 
 const cargarArchivo = (req, res = response) => {
     let { archivo } = req.files;
+    let nombreCortado = archivo.name.split('.')
     console.log(archivo);
+    console.log(nombreCortado);
+
+    const extensionesValidas = ['png', 'jpg', 'jpeg', 'gif'];
 
     let uploadPath;
 
@@ -20,7 +24,7 @@ const cargarArchivo = (req, res = response) => {
         if (err)
             return res.status(500).send(err);
 
-        res.send('File uploaded!');
+        res.send(`File uploaded! ${uploadPath}`);
     });
 
 }
